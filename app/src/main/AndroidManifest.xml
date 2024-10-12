@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:ignore="Instantiatable">
+
+    <uses-feature
+            android:name="android.hardware.touchscreen"
+            android:required="false" />
+    <uses-feature
+            android:name="android.software.leanback"
+            android:required="false" />
+
+    <!-- 应用基本信息和其他配置 -->
+
+    <queries>
+        <!-- 声明需要查询的应用组件 -->
+        <package android:name="${applicationId}" />
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="http" />
+        </intent>
+        <!-- 在此添加其他需要查询的组件 -->
+    </queries>
+
+    <uses-permission
+            android:name="android.permission.QUERY_ALL_PACKAGES"
+            tools:ignore="QueryAllPackagesPermission" />
+    <application
+            android:name=".App"
+            android:allowBackup="true"
+            android:banner="@mipmap/ic_launcher"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:dataExtractionRules="@xml/data_extraction_rules"
+            android:fullBackupContent="@xml/backup_rules"
+            android:supportsRtl="true"
+            android:usesCleartextTraffic="true"
+            android:theme="@style/Theme.BsLauncher">
+        <meta-data
+                android:name="CHANNEL"
+                android:value="aike" />
+
+        <!-- Google Play Services -->
+        <meta-data
+                android:name="com.google.android.gms.version"
+                android:value="@integer/google_play_services_version" />
+        <!-- 启用广告加载优化标志，以减少广告加载导致 ANR 的发生 -->
+        <meta-data
+                android:name="com.google.android.gms.ads.flag.OPTIMIZE_AD_LOADING"
+                android:value="true" />
+
+        <!--Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713-->
+        <meta-data
+                android:name="com.google.android.gms.ads.APPLICATION_ID"
+                android:value="ca-app-pub-2540674760491959~8068485952" />
+
+        <!--        <meta-data-->
+        <!--                android:name="com.google.android.gms.ads.APPLICATION_ID"-->
+        <!--                android:value="ca-app-pub-3940256099942544~3347511713" />-->
+        <!-- Google Ad Manager-->
+        <meta-data
+                android:name="com.google.android.gms.ads.AD_MANAGER_APP"
+                android:value="true" />
+
+        <activity
+                android:name=".MainActivity"
+                android:launchMode="singleTask"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.BsLauncher"
+                android:exported="true" />
+        <activity
+                android:name=".SplashActivity"
+                android:launchMode="singleTask"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.BsLauncher"
+                android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
+    </application>
+
+</manifest>

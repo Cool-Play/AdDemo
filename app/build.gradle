@@ -1,0 +1,115 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+}
+
+android {
+    namespace = appNamespace
+    compileSdk versions.compileSdkVersion
+
+
+    defaultConfig {
+        minSdkVersion versions.minSdkVersion
+        targetSdkVersion versions.targetSdkVersion
+        applicationId appId
+        versionCode versions.versionCode
+        versionName versions.versionName
+        multiDexEnabled true
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+    signingConfigs {
+        release {
+            storeFile file(RELEASE_STORE_FILE)
+            storePassword RELEASE_STORE_PASSWORD
+            keyAlias RELEASE_KEY_ALIAS
+            keyPassword RELEASE_KEY_PASSWORD
+        }
+    }
+    buildTypes {
+
+        debug {
+            //混淆
+            buildConfigField "String", "appId", api.appId
+            buildConfigField "String", "spalashId", api.splashId
+            buildConfigField "String", "bannerId", api.bannerId
+            minifyEnabled false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        release {
+            //混淆
+            buildConfigField "String", "appId", api.appId
+            buildConfigField "String", "spalashId", api.splashId
+            buildConfigField "String", "bannerId", api.bannerId
+            minifyEnabled false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    // 设置输出文件名
+    applicationVariants.configureEach { variant ->
+        variant.outputs.configureEach {
+            // 获取渠道信息
+            outputFileName = "app-$name-${variant.versionName}.apk"
+
+        }
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+    buildFeatures {
+        buildConfig true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.5.11'
+    }
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.23"
+    implementation("androidx.core:core-ktx:$ktx")
+    implementation "androidx.paging:paging-runtime-ktx:3.3.2"
+    implementation "androidx.paging:paging-compose:3.3.2"
+    // TradPlus
+    implementation 'com.tradplusad:tradplus:12.6.0.1'
+    //noinspection GradleCompatible
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.3.0-alpha02'
+    // Admob
+    implementation 'com.google.android.gms:play-services-ads:23.3.0'
+    implementation 'com.tradplusad:tradplus-googlex:2.12.6.0.1'
+
+    // Google IMA
+    implementation 'androidx.browser:browser:1.4.0'
+    implementation 'androidx.media:media:1.6.0'
+    implementation 'com.tradplusad:tradplus-google-ima:48.12.6.0.1'
+    implementation 'com.google.ads.interactivemedia.v3:interactivemedia:3.31.0'
+
+    // Applovin
+    implementation 'com.applovin:applovin-sdk:12.5.0'
+    implementation 'com.tradplusad:tradplus-applovin:9.12.2.0.1'
+    implementation 'com.google.android.gms:play-services-ads-identifier:17.0.0'
+
+    // Cross Promotion
+    implementation 'com.tradplusad:tradplus-crosspromotion:27.12.6.0.1'
+    // TP Exchange
+    // 请注意保持与主包版本同步更新
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.tradplusad:tp_exchange:40.12.6.0.1'
+    //引入测试工具，Build.gradle中添加引用:
+    debugImplementation 'com.tradplusad:tradplus-tool:1.1.0'
+
+}
