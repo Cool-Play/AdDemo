@@ -1,5 +1,5 @@
 # 0. 前置
-以下是Coolplay广告SDK集成文档，请我们客户的开发人员参考此文档集成。同时开发人员在启动适配前，请通过商务先告知我方App的包名，我们将为该App提供集成广告所需的如下ID：appId、bannerId和splashId等，如果需要更多广告类型，也请通过商务联系我们。
+以下是Coolplay广告SDK集成文档，请我们客户的开发人员参考此文档集成。同时开发人员在启动适配前，请通过商务先告知我方App的包名，我们将为该App提供集成广告所需的如下ID：appId、AdMobId、bannerId和splashId等，如果需要更多广告类型，也请通过商务联系我们。
 
 
 # 1. 配置仓库地址
@@ -48,9 +48,10 @@ dependencies {
                android:name="com.google.android.gms.ads.flag.OPTIMIZE_AD_LOADING"
                   android:value="true"/>
 
+        <!--Sample AdMobId: ca-app-pub-3940256099942544~3347511713-->
         <meta-data
                 android:name="com.google.android.gms.ads.APPLICATION_ID"
-                android:value="ca-app-pub-2540674760491959~8068485952"/>
+                android:value="这里填写AdMobId"/>
         <!-- Google Ad Manager-->
         <meta-data
                 android:name="com.google.android.gms.ads.AD_MANAGER_APP"
@@ -74,6 +75,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        //隐私合规声明后在初始化
         initTPSDK()
     }
 
@@ -82,7 +84,7 @@ class App : Application() {
             // 初始化是否成功 （可选）
             TradPlusSdk.setTradPlusInitListener { Log.i("TradPlusLog", "onInitSuccess: ") }
             // 初始化SDK
-            TradPlusSdk.initSdk(this, BuildConfig.appId)
+            TradPlusSdk.initSdk(this, "这里填写appId")
         }
     }
 }
@@ -108,7 +110,7 @@ splash.xml
  */
 private fun loadSplashAd() {
   
-    TPSplash(this, "0B3FFB024DA1B8AF2AF0F6A312345678").apply {
+    TPSplash(this, "需要填写splashId").apply {
         tpSplash = this
         // 设置监听
         setAdListener(object : SplashAdListener() {
@@ -217,7 +219,8 @@ private fun loadBanner(width: Int = 0) {
             }
         })
         adContainer?.addView(tpBanner)
-        it.loadAd("7BA4665352D496EF3D6A433512345678");
+
+        it.loadAd("需要填写bannerId");
     }
 }
 
