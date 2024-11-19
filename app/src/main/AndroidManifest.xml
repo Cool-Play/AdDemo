@@ -89,13 +89,13 @@
                 android:screenOrientation="portrait"
                 android:theme="@style/Theme.BsLauncher"
                 android:exported="true" />
-<!--        <activity-->
-<!--                android:name=".MaxWorkPrintActivity"-->
-<!--                android:screenOrientation="portrait"-->
-<!--                android:theme="@style/Theme.BsLauncher"-->
-<!--                android:exported="true" />-->
         <activity
                 android:name=".MaxWorkPrintActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.BsLauncher"
+                android:exported="true" />
+        <activity
+                android:name=".MaxSplashActivity"
                 android:launchMode="singleTask"
                 android:screenOrientation="portrait"
                 android:theme="@style/Theme.BsLauncher"
