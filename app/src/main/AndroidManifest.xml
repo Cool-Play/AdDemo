@@ -10,6 +10,8 @@
             android:name="android.software.leanback"
             android:required="false" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <!-- 应用基本信息和其他配置 -->
 
     <queries>
@@ -36,6 +38,9 @@
             android:supportsRtl="true"
             android:usesCleartextTraffic="true"
             android:theme="@style/Theme.BsLauncher">
+        <meta-data
+                android:name="applovin.sdk.verbose_logging"
+                android:value="true" />
         <meta-data
                 android:name="CHANNEL"
                 android:value="aike" />
@@ -68,8 +73,29 @@
                 android:screenOrientation="portrait"
                 android:theme="@style/Theme.BsLauncher"
                 android:exported="true" />
+
         <activity
-                android:name=".SplashActivity"
+                android:name=".RecyclerViewNativeAdActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.BsLauncher"
+                android:exported="true" />
+        <activity
+                android:name=".MaxMainActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.BsLauncher"
+                android:exported="true" />
+        <activity
+                android:name=".MaxAdDrawActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.BsLauncher"
+                android:exported="true" />
+<!--        <activity-->
+<!--                android:name=".MaxWorkPrintActivity"-->
+<!--                android:screenOrientation="portrait"-->
+<!--                android:theme="@style/Theme.BsLauncher"-->
+<!--                android:exported="true" />-->
+        <activity
+                android:name=".MaxWorkPrintActivity"
                 android:launchMode="singleTask"
                 android:screenOrientation="portrait"
                 android:theme="@style/Theme.BsLauncher"

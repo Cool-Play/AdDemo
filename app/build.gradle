@@ -2,8 +2,12 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
+    id("applovin-quality-service")
 }
 
+applovin {
+    apiKey = "24FTIt6TppUoliRCuhDDcE1vPK9vquU7bnaf63AFWdV22vykLgR3tcSP8Ra6gfRzLVlSpIDEEc0wPRks5IPDOS"
+}
 android {
     namespace = appNamespace
     compileSdk versions.compileSdkVersion
@@ -99,7 +103,7 @@ dependencies {
     implementation 'com.google.ads.interactivemedia.v3:interactivemedia:3.31.0'
 
     // Applovin
-    implementation 'com.applovin:applovin-sdk:12.5.0'
+//    implementation 'com.applovin:applovin-sdk:12.5.0'
     implementation 'com.tradplusad:tradplus-applovin:9.12.2.0.1'
     implementation 'com.google.android.gms:play-services-ads-identifier:17.0.0'
 
@@ -111,5 +115,7 @@ dependencies {
     implementation 'com.tradplusad:tp_exchange:40.12.6.0.1'
     //引入测试工具，Build.gradle中添加引用:
     debugImplementation 'com.tradplusad:tradplus-tool:1.1.0'
+
+    implementation("com.applovin:applovin-sdk:13.0.1")
 
 }
