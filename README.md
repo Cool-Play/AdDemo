@@ -1,37 +1,25 @@
 # 0. 前置
-以下是Coolplay广告SDK集成文档，请我们客户的开发人员参考此文档集成。同时开发人员在启动适配前，请通过商务先告知我方App的包名，我们将为该App提供集成广告所需的如下ID：appId、AdMobId、bannerId和splashId等，如果需要更多广告类型，也请通过商务联系我们。
 
+以下是Coolplay广告SDK集成文档，请我们客户的开发人员参考此文档集成。同时开发人员在启动适配前，请通过商务先告知我方App的包名，我们将为该App提供集成广告所需的如下ID、sdkKey、apiKey、nativeId、mrecId和bannerId等，如果需要更多广告类型，也请通过商务联系我们。
 
 # 1. 配置仓库地址
+
 repositories {
-   mavenCentral()
+mavenCentral()
 }
 
 # 2. App's build.gradle 增加依赖包
+
 ```
 dependencies {
-// TradPlus
-    implementation 'com.tradplusad:tradplus:12.6.10.1'
-    //noinspection GradleCompatible
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.appcompat:appcompat:1.3.0-alpha02'
-    // Admob
-    implementation 'com.google.android.gms:play-services-ads:23.3.0'
-    implementation 'com.tradplusad:tradplus-googlex:2.12.6.10.1'
-    // Applovin
-    implementation 'com.applovin:applovin-sdk:13.0.0'
-    implementation 'com.tradplusad:tradplus-applovin:9.12.6.10.1'
-    implementation 'com.google.android.gms:play-services-ads-identifier:17.0.0'
-    // Cross Promotion
-    implementation 'com.tradplusad:tradplus-crosspromotion:27.12.6.10.1'
-    // TP Exchange
-    // 请注意保持与主包版本同步更新
-    implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'com.tradplusad:tp_exchange:40.12.6.10.1'
-
+  // Applovin
+    implementation("com.applovin:applovin-sdk:13.0.1")
+    implementation 'com.google.android.gms:play-services-ads-identifier:18.1.0'
 }
 ```
+
 # 3. AndroidManifest.xml
+
 ```
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -39,27 +27,16 @@ dependencies {
     package="your.app.package.name">
     <uses-permission android:name="android.permission.AD_ID" />
     <application>
-        <!-- Google Play Services -->
-        <meta-data
-                android:name="com.google.android.gms.version"
-                android:value="@integer/google_play_services_version" />
-        <!-- 启用广告加载优化标志，以减少广告加载导致 ANR 的发生 -->
-        <meta-data
-               android:name="com.google.android.gms.ads.flag.OPTIMIZE_AD_LOADING"
-                  android:value="true"/>
-
-        <!--Sample AdMobId: ca-app-pub-3940256099942544~3347511713-->
-        <meta-data
-                android:name="com.google.android.gms.ads.APPLICATION_ID"
-                android:value="这里填写AdMobId"/>
-        <!-- Google Ad Manager-->
-        <meta-data
-                android:name="com.google.android.gms.ads.AD_MANAGER_APP"
-                android:value="true"/>
+        // Applovin log 开关
+        <meta-data  
+                android:name="applovin.sdk.verbose_logging"
+                android:value="true" />
     </application>
 </manifest>
 ```
+
 # 4. 初始化代码
+
 ```
 在application中初始化代码
 
@@ -76,28 +53,36 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         //隐私合规声明后在初始化
-        initTPSDK()
+        initSdk()
     }
 
-    private fun initTPSDK() {
-        if (!TradPlusSdk.getIsInit()) {
-            // 初始化是否成功 （可选）
-            TradPlusSdk.setTradPlusInitListener { Log.i("TradPlusLog", "onInitSuccess: ") }
-            // 初始化SDK
-            TradPlusSdk.initSdk(this, "这里填写appId")
+      private fun initSdk() {
+        val executor = Executors.newSingleThreadExecutor();
+        executor.execute {
+            val initConfig =
+                AppLovinSdkInitializationConfiguration.builder("填写sdkKey", this)
+                    .setMediationProvider(AppLovinMediationProvider.MAX)
+                    .build()
+
+            AppLovinSdk.getInstance(this).initialize(initConfig) {
+                Log.i("Applovin", "onSdkInitialized")
+            }
+            executor.shutdown()
         }
     }
 }
 ```
 
 # 5. 混淆配置
+
 ```
--keep public class com.tradplus.** { *; }
--keep class com.tradplus.ads.** { *; }
+混淆配置已经自动处理,不需要自己填写广告相关的混淆
 ```
-# 6. 开屏广告
+
+# 6. banner、MREC 广告
+
 ```
-splash.xml
+activity_search.xml
 
 <FrameLayout
         android:id="@+id/adContainer"
@@ -105,133 +90,157 @@ splash.xml
         android:layout_height="match_parent" />
 
 
-/**
- * 加载开屏广告
- */
-private fun loadSplashAd() {
-  
-    TPSplash(this, "需要填写splashId").apply {
-        tpSplash = this
-        // 设置监听
-        setAdListener(object : SplashAdListener() {
-            // 广告加载完成 首个广告源加载成功时回调 一次加载流程只会回调一次
-            override fun onAdLoaded(tpAdInfo: TPAdInfo?, tpBaseAd: TPBaseAd?) {
-                showSplashAd()
+class MaxSearchActivity : AppCompatActivity(), MaxAdViewAdListener {
+
+    private var adContainer: FrameLayout? = null
+    private var adMrecContainer: FrameLayout? = null
+    private var adView: MaxAdView? = null
+    private var adMrecView: MaxAdView? = null
+    private var searchEdit: AppCompatTextView? = null
+
+    @SuppressLint("SetJavaScriptEnabled")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_search)
+        adContainer = findViewById(R.id.adContainer)
+        adMrecContainer = findViewById(R.id.adMrecContainer)
+        searchEdit = findViewById(R.id.et_search)
+
+        searchEdit?.setOnClickListener {
+            goSearch()
+        }
+        //初始化 banner 广告
+        adView = MaxAdView("填写bannerId", this)
+        adContainer?.post {
+            val heightDp = MaxAdFormat.BANNER.getAdaptiveSize(this).height
+            val heightPx = AppLovinSdkUtils.dpToPx(this, heightDp)
+            adView?.layoutParams = FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, heightPx)
+            adView?.setListener(this)
+            adView?.loadAd()
+        }
+        //初始化 MREC 广告 尺寸 300x250
+        adMrecView = MaxAdView("填写 mrecId", MaxAdFormat.MREC, this)
+        adMrecContainer?.post {
+            val heightDp = MaxAdFormat.MREC.getAdaptiveSize(this).height
+            val heightPx = AppLovinSdkUtils.dpToPx(this, heightDp)
+            adView?.layoutParams = FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, heightPx)
+            adMrecView?.setListener(this)
+            adMrecView?.loadAd()
+        }
+    }
+
+    private fun goSearch() {
+        startActivity(Intent(this, MaxSearchResultActivity::class.java))
+    }
+
+    // 消亡banner广告，
+    private fun destroyTpBanner() {
+        adView?.destroy()
+    }
+
+    override fun onDestroy() {
+        destroyTpBanner()
+        super.onDestroy()
+    }
+
+    override fun onAdLoaded(p0: MaxAd) {
+        Log.e("TAG", "广告加载成功")
+        if (p0.adUnitId == BuildConfig.bannerId) {
+            if (adView?.parent == null) {
+                adContainer?.addView(adView)
             }
-
-            // 广告被点击
-            override fun onAdClicked(tpAdInfo: TPAdInfo?) {}
-
-            // 广告成功展示在页面上
-            override fun onAdImpression(tpAdInfo: TPAdInfo?) {
-
+        } else if (p0.adUnitId == BuildConfig.mrecId) {
+            if (adMrecView?.parent == null) {
+                adMrecContainer?.addView(adMrecView)
             }
+        }
+    }
 
-            // 广告加载失败
-            override fun onAdLoadFailed(error: TPAdError?) {
-                goMain()
-            }
+    override fun onAdDisplayed(p0: MaxAd) {
+        Log.e("TAG", "广告显示成功")
+    }
 
-            // 广告被关闭
-            override fun onAdClosed(tpAdInfo: TPAdInfo?) {
-                destroySplash()
-                goMain()
-            }
+    override fun onAdHidden(p0: MaxAd) {
+        Log.e("TAG", "广告隐藏成功")
+    }
 
+    override fun onAdClicked(p0: MaxAd) {
+
+    }
+
+    override fun onAdLoadFailed(p0: String, p1: MaxError) {
+        //失败后加载下一个
+        adView?.loadAd()
+    }
+
+    override fun onAdDisplayFailed(p0: MaxAd, p1: MaxError) {
+       //显示失败后继续下一个
+        adView?.loadAd()
+    }
+
+  override fun onAdDisplayed(p0: MaxAd) { /* DO NOT USE - THIS IS RESERVED FOR FULLSCREEN ADS ONLY AND WILL BE REMOVED IN A FUTURE SDK RELEASE */ }
+
+  override fun onAdHidden(p0: MaxAd) { /* DO NOT USE - THIS IS RESERVED FOR FULLSCREEN ADS ONLY AND WILL BE REMOVED IN A FUTURE SDK RELEASE */ }
+
+}
+```
+
+# 7. RecyclerView 广告
+
+```
+activity_search_result.xml
+    <androidx.recyclerview.widget.RecyclerView
+         android:id="@+id/recycler_view"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent" />
+
+
+        
+class MaxSearchResultActivity : AppCompatActivity(), MaxAdViewAdListener {
+       // Create recycler adapter
+        val originalAdapter = CustomRecyclerAdapter(this, sampleData)
+
+        // Configure ad adapter
+        val settings = MaxAdPlacerSettings("填写 nativeId")
+        settings.addFixedPosition(2)
+        settings.addFixedPosition(8)
+        settings.repeatingInterval = 6
+        
+        adAdapter = MaxRecyclerAdapter(settings, originalAdapter, this)
+        //custom views, you must also set the nativeAdViewBinder on the adapter
+        val binder: MaxNativeAdViewBinder =
+            MaxNativeAdViewBinder.Builder(R.layout.native_custom_ad_view)
+                .setTitleTextViewId(R.id.title_text_view)
+                .setBodyTextViewId(R.id.body_text_view)
+                .setAdvertiserTextViewId(R.id.advertiser_text_view)
+                .setIconImageViewId(R.id.icon_image_view)
+                .setMediaContentViewGroupId(R.id.media_view_container)
+                .setOptionsContentViewGroupId(R.id.options_view)
+                .setStarRatingContentViewGroupId(R.id.star_rating_view)
+                .setCallToActionButtonId(R.id.cta_button)
+                .build()
+        adAdapter.adPlacer.setNativeAdViewBinder(binder)
+        // Set ad size −1 (MATCH_PARENT) -2 (WRAP_CONTENT) 
+        // set the ad size with a width of 300 and height of 200.
+        adAdapter.adPlacer.setAdSize(-1, -2)
+
+        adAdapter.setListener(object : MaxAdPlacer.Listener {
+            override fun onAdLoaded(position: Int) {}
+
+            override fun onAdRemoved(position: Int) {}
+
+            override fun onAdClicked(ad: MaxAd?) {}
+
+            override fun onAdRevenuePaid(ad: MaxAd?) {}
         })
-        loadAd(null);
-    }
-}
 
-/**
- *  显示开屏广告 监听到onAdLoaded回调后调用
- */
-fun showSplashAd() {
-    if (tpSplash?.isReady == true) {
-        tpSplash?.showAd(adContainer)
-    }
-}
-/**
-*. 消亡
-**/
-fun destroySplash() {
-    adContainer?.removeAllViews()
-    tpSplash?.onDestroy()
-    tpSplash = null
+        recyclerView.adapter = adAdapter
+        recyclerView.layoutManager = GridLayoutManager(this, 3, RecyclerView.VERTICAL, false)
+        adAdapter.loadAds()
 }
 ```
 
-# 7. 横幅广告
-```
-activity_main.xml
-<FrameLayout
-        android:id="@+id/adContainer"
-        android:layout_gravity="center_horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp" />
+# 8. 隐私合规
 
-
-/**
- * --------------------------------------------------------------------------------------------------------------
- * banner的基本用法
- * width: Int = 0  // banner的宽度
- * --------------------------------------------------------------------------------------------------------------
- */
-private fun loadBanner(width: Int = 0) {
-    TPBanner(this).also {
-        tpBanner = it
-        it.setAdListener(object : BannerAdListener() {
-            override fun onAdClicked(tpAdInfo: TPAdInfo) {
-                Toast.makeText(this@MainActivity, "广告被点击了", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onAdImpression(tpAdInfo: TPAdInfo) {
-                Toast.makeText(this@MainActivity, "广告展示", Toast.LENGTH_SHORT).show()
-                Log.i(
-                    "TradPlusLog",
-                    "width=${width},screenWidth:---${it.measuredWidth}"
-                )
-               //这里做放大处理 使广告填充满两边 如果默认的这里不需要处理
-                if (width > 0 && it.measuredWidth > 0) {
-                    val scale = width / it.measuredWidth.toFloat()
-                    //容器 view
-                    adContainer?.scaleX = scale
-                    adContainer?.scaleY = scale
-                    Log.i("TradPlusLog", "${scale}")
-                }
-            }
-
-            override fun onAdLoaded(tpAdInfo: TPAdInfo) {
-                Toast.makeText(this@MainActivity, "广告加载完成", Toast.LENGTH_SHORT).show()
-
-            }
-
-            override fun onAdLoadFailed(error: TPAdError) {
-                Toast.makeText(this@MainActivity, "广告加载失败", Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onAdClosed(tpAdInfo: TPAdInfo) {
-                Toast.makeText(
-                    this@MainActivity,
-                    "onAdClosed:${tpAdInfo.adSourceName + "广告关闭"}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        })
-        adContainer?.addView(tpBanner)
-
-        it.loadAd("需要填写bannerId");
-    }
-}
-
-//  消亡banner广告，
-private fun destroyTpBanner() {
-    tpBanner?.also { adContainer?.removeView(it) }
-    tpBanner?.onDestroy()
-    tpBanner = null
-}
-```
-# 8. 隐私合规 
-
-隐私合规具体规范请参照 https://docs.tradplusad.com/docs/tradplussdk_android_doc_v6/privacy_policy/os_privacy_policy
+隐私合规具体规范请参照 https://developers.applovin.com/en/max/android/overview/privacy/
 

@@ -3,17 +3,16 @@ ext {
     lifecycle_version = '2.3.1'
     archLifecycleVersion = '2.2.0'
     appNamespace = 'cn.coolplay.mundonoticias'
-    appId = 'com.coolplay.mundonoticias'
-//    appId = 'com.changyow.dl4th'
+    appId = 'com.yhk.rabbit.print.walkprint'
     ktx = '1.13.1'
     appcompat = '1.7.0'
     material3 = '1.2.1'
     api = [
-            appId   : "\"315E6568ADAAE465384C5461D12E9759\"",
-            //test 469FF0706FDE815A364BA51FE0BFE6D8
-            bannerId: "\"7BA4665352D496EF3D6A4335CCFF1181\"",
-            //test F9E936443FBE8082BECCBBEE8FF81B07
-            splashId: "\"0B3FFB024DA1B8AF2AF0F6A345BDB427\""
+            sdkKey  : "\"kZUEftzqIi7oaux7mXIcPcqbQJflAXf2TTnUZ05LZru2JP1HPrBTlqOlzvtNDWESCtbTWCZGNyzxT9pDw3OlEm\"",
+            apiKey  : "\"24FTIt6TppUoliRCuhDDcE1vPK9vquU7bnaf63AFWdV22vykLgR3tcSP8Ra6gfRzLVlSpIDEEc0wPRks5IPDOS\"",//ad-review-key»
+            mrecId  : "\"a2d8f251d6fa806d\"",
+            bannerId: "\"352930c5abf1250b\"",
+            nativeId: "\"00ca9204561d0026\""
     ]
     versions = [minSdkVersion    : 21,
                 compileSdkVersion: 34,

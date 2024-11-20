@@ -1,6 +1,5 @@
 <resources>
-    <!--    <string name="app_name">MundoNoticias</string>-->
-    <string name="app_name">iConsole</string>
+    <string name="app_name">AdDemo</string>
     <string name="the_network_is_abnormal">当前网络未连接</string>
     <string name="load_ad">进入加载广告页面</string>
     <string name="Banner">横幅Banner</string>

@@ -19,7 +19,7 @@ class MaxMainActivity : AppCompatActivity() {
             startActivity(Intent(this, MaxWorkPrintActivity::class.java))
         }
         findViewById<Button>(R.id.tv_ai_search_pic).setOnClickListener {
-            startActivity(Intent(this, RecyclerViewNativeAdActivity::class.java))
+            startActivity(Intent(this, MaxSearchActivity::class.java))
         }
     }
 

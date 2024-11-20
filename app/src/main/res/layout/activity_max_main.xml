@@ -9,7 +9,7 @@
     <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            app:title="WorkPrintDemo"
+            app:title="AdDemo"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_height="wrap_content" />
 
@@ -21,7 +21,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="80dp"
             android:text="AI绘图"
             android:layout_height="wrap_content" />
 

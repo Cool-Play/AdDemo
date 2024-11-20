@@ -3,7 +3,7 @@
         android:id="@+id/cp_rl_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ffffff"
+        android:background="#f2f1f6"
         android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
@@ -20,7 +20,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar"
             android:layout_width="300dp"
-            android:layout_height="300dp" />
+            android:background="#ffffff"
+            android:layout_height="300dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ai_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+    </FrameLayout>
 
     <Button
             android:id="@+id/tv_show"

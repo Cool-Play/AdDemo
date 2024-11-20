@@ -6,9 +6,9 @@
 
     <TextView
             android:layout_width="wrap_content"
-            android:text="iConsole"
+            android:text="AdDemo"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="60dp"
             android:textSize="40sp"
             android:textColor="#000000"
             android:layout_height="wrap_content" />

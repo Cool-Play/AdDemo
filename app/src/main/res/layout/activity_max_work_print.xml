@@ -22,15 +22,5 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_height="0dp" />
 
-    <FrameLayout
-            android:id="@+id/adContainer"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:background="#ff3148"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_width="0dp"
-            android:layout_marginBottom="50dp"
-            android:layout_height="wrap_content"
-            android:minHeight="50dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

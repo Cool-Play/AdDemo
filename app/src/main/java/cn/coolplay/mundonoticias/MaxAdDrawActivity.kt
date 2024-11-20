@@ -3,9 +3,13 @@ package cn.coolplay.mundonoticias
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import coil.load
 import com.applovin.mediation.MaxAd
 import com.applovin.mediation.MaxAdFormat
 import com.applovin.mediation.MaxAdViewAdListener
@@ -17,6 +21,7 @@ class MaxAdDrawActivity : AppCompatActivity(), MaxAdViewAdListener {
 
     private var adContainer: FrameLayout? = null
     private var adView: MaxAdView? = null
+    private var aiResult: ImageView? = null
     private var tvShow: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,18 +30,22 @@ class MaxAdDrawActivity : AppCompatActivity(), MaxAdViewAdListener {
         adContainer = findViewById(R.id.adContainer)
 
         tvShow = findViewById(R.id.tv_show)
-        adView = MaxAdView("d0ba481d6a8a2f10", MaxAdFormat.MREC, this)
-        // Stretch to the width of the screen for banners to be fully functional
+        aiResult = findViewById(R.id.ai_result)
+        adView = MaxAdView(BuildConfig.mrecId, MaxAdFormat.MREC, this)
+        adView?.setExtraParameter("allow_pause_auto_refresh_immediately", "true")
+        adView?.stopAutoRefresh()        // Stretch to the width of the screen for banners to be fully functional
         // Get the adaptive banner height.
+        //设置广告位名称 用于不同版面类别的统计
+        adView?.placement = "AIDraw"
 
         adContainer?.post {
             val heightDp = adContainer?.measuredHeight ?: 0
             Log.i("Max", "Banner height: $heightDp")
 
-            adView?.layoutParams = FrameLayout.LayoutParams(heightDp, heightDp)
-            adContainer?.setBackgroundColor(Color.BLUE)
+            adView?.layoutParams = FrameLayout.LayoutParams(heightDp, heightDp, Gravity.CENTER)
             adView?.setListener(this)
             tvShow?.setOnClickListener {
+                aiResult?.isVisible = false
                 adView?.loadAd()
             }
         }
@@ -61,6 +70,8 @@ class MaxAdDrawActivity : AppCompatActivity(), MaxAdViewAdListener {
     override fun onAdDisplayed(p0: MaxAd) {
         tvShow?.postDelayed({
             adContainer?.removeView(adView)
+            aiResult?.isVisible = true
+            aiResult?.load(R.mipmap.xiaogou)
         }, 10000)
 
     }

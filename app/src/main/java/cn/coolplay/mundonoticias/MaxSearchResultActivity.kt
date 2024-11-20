@@ -1,35 +1,66 @@
 package cn.coolplay.mundonoticias
 
 import android.app.Activity
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.applovin.mediation.MaxAd
+import com.applovin.mediation.MaxAdFormat
+import com.applovin.mediation.MaxAdViewAdListener
+import com.applovin.mediation.MaxError
+import com.applovin.mediation.ads.MaxAdView
 import com.applovin.mediation.nativeAds.MaxNativeAdViewBinder
 import com.applovin.mediation.nativeAds.adPlacer.MaxAdPlacer
 import com.applovin.mediation.nativeAds.adPlacer.MaxAdPlacerSettings
 import com.applovin.mediation.nativeAds.adPlacer.MaxRecyclerAdapter
+import com.applovin.sdk.AppLovinSdkUtils
 import kotlin.random.Random
 
-class RecyclerViewNativeAdActivity : AppCompatActivity() {
+class MaxSearchResultActivity : AppCompatActivity(), MaxAdViewAdListener {
 
-    private val sampleData = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".chunked(1)
+    private val sampleData = arrayListOf<Int>()
     private lateinit var adAdapter: MaxRecyclerAdapter
+    private var searchEdit: EditText? = null
+    private var btnSearch: TextView? = null
+    private var adContainer: FrameLayout? = null
+    private var adView: MaxAdView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_native_recycler_view)
-
+        setContentView(R.layout.activity_search_result)
+        val recyclerView = findViewById<RecyclerView>(R.id.recycler_view)
+        searchEdit = findViewById(R.id.search_edit)
+        btnSearch = findViewById(R.id.btnSearch)
+        adContainer = findViewById(R.id.adContainer)
+        findViewById<ImageView>(R.id.iv_back).setOnClickListener {
+            this.finish()
+        }
+        adView = MaxAdView(BuildConfig.bannerId, this)
+        adContainer?.post {
+            val heightDp = MaxAdFormat.BANNER.getAdaptiveSize(this).height
+            val heightPx = AppLovinSdkUtils.dpToPx(this, heightDp)
+            adView?.layoutParams =
+                FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, heightPx)
+            adView?.setListener(this)
+            adView?.loadAd()
+        }
         // Create recycler adapter
         val originalAdapter = CustomRecyclerAdapter(this, sampleData)
 
         // Configure ad adapter
-        val settings = MaxAdPlacerSettings("a6d287e931048a4a")
+        val settings = MaxAdPlacerSettings(BuildConfig.nativeId)
         settings.addFixedPosition(2)
         settings.addFixedPosition(8)
         settings.repeatingInterval = 6
@@ -60,22 +91,81 @@ class RecyclerViewNativeAdActivity : AppCompatActivity() {
             override fun onAdRevenuePaid(ad: MaxAd?) {}
         })
 
-        // Configure recycler view
-        val recyclerView = findViewById<RecyclerView>(R.id.recycler_view)
         recyclerView.adapter = adAdapter
         recyclerView.layoutManager = GridLayoutManager(this, 3, RecyclerView.VERTICAL, false)
-//        recyclerView.layoutManager = LinearLayoutManager(this)
-
         adAdapter.loadAds()
+        btnSearch?.setOnClickListener {
+            it.hideKeyboard()
+            fillData()
+        }
     }
 
+    private fun fillData() {
+        sampleData.clear()
+        for (i in 0..15) {
+            sampleData.add(R.mipmap.xiaochou)
+            sampleData.add(R.mipmap.xiaochou1)
+        }
+        adAdapter.notifyDataSetChanged()
+    }
+
+    fun View.hideKeyboard() {
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(windowToken, 0)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+    }
+
+    private fun destroyBanner() {
+        adAdapter.destroy()
+        adView?.destroy()
+    }
 
     override fun onDestroy() {
-        adAdapter.destroy()
+        destroyBanner()
         super.onDestroy()
     }
 
-    class CustomRecyclerAdapter(private val activity: Activity, val data: List<String>) :
+    override fun onAdLoaded(p0: MaxAd) {
+        Log.e("TAG", "广告加载成功")
+        if (p0.adUnitId == BuildConfig.bannerId) {
+            if (adView?.parent == null) {
+                adContainer?.addView(adView)
+            }
+        }
+    }
+
+    override fun onAdDisplayed(p0: MaxAd) {
+        Log.e("TAG", "广告显示成功")
+    }
+
+    override fun onAdHidden(p0: MaxAd) {
+        Log.e("TAG", "广告隐藏成功")
+    }
+
+    override fun onAdClicked(p0: MaxAd) {
+
+    }
+
+    override fun onAdLoadFailed(p0: String, p1: MaxError) {
+        adView?.loadAd()
+    }
+
+    override fun onAdDisplayFailed(p0: MaxAd, p1: MaxError) {
+        adView?.loadAd()
+    }
+
+    override fun onAdExpanded(p0: MaxAd) {
+
+    }
+
+    override fun onAdCollapsed(p0: MaxAd) {
+    }
+
+    class CustomRecyclerAdapter(private val activity: Activity, val data: List<Int>) :
         RecyclerView.Adapter<CustomRecyclerAdapter.ViewHolder>() {
         // 生成随机颜色的方法
         private fun getRandomColor(): Int {
@@ -92,8 +182,7 @@ class RecyclerViewNativeAdActivity : AppCompatActivity() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.textView.setBackgroundColor(getRandomColor());
-            holder.textView.text = data[position]
+            holder.ivView.load(data[position])
         }
 
         override fun getItemCount(): Int {
@@ -101,7 +190,7 @@ class RecyclerViewNativeAdActivity : AppCompatActivity() {
         }
 
         class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-            val textView: TextView = itemView.findViewById(R.id.text_view)
+            val ivView: ImageView = itemView.findViewById(R.id.iv_view)
         }
 
     }
