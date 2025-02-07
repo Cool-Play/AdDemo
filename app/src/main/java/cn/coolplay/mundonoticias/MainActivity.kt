@@ -1,88 +1,85 @@
 package cn.coolplay.mundonoticias
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.tradplus.ads.base.bean.TPAdError
-import com.tradplus.ads.base.bean.TPAdInfo
-import com.tradplus.ads.open.banner.BannerAdListener
-import com.tradplus.ads.open.banner.TPBanner
+import com.zeasn.ad.connector.ZeasnAd
+import com.zeasn.ad.connector.bean.ZeasnAdInfo
+import com.zeasn.ad.connector.bean.ZeasnError
+import com.zeasn.ad.connector.impl.AdType
+import com.zeasn.ad.connector.impl.PluginPlayerControl
+import com.zeasn.ad.connector.impl.ZeasnAdKey
+import com.zeasn.ad.connector.listener.ZeasnOnVodListener
 
 
 class MainActivity : AppCompatActivity() {
+    var bannerAdPC: PluginPlayerControl? = null
+    private var adContainer1: FrameLayout? = null
+    val mHandle = Handler(Looper.getMainLooper())
+    private var bannerAd: ZeasnAd? = null
+    private val param by lazy {
+        val param: MutableMap<String, Any> = HashMap()
+        param[ZeasnAdKey.unitViewId] = "unitViewId"
+        param
+    }
 
-    private var adContainer: FrameLayout? = null
-    private var tpBanner: TPBanner? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        adContainer = findViewById(R.id.adContainer)
-        val llview: LinearLayout = findViewById(R.id.cp_rl_root)
+        adContainer1 = findViewById(R.id.adContainer1)
 
-        llview.post {
-            loadBanner(llview.measuredWidth)
-        }
+        loadAdBanner()
 
     }
 
-    /**
-     * --------------------------------------------------------------------------------------------------------------
-     * banner的基本用法，如果没有特殊需求，按照如下代码接入即可
-     * width: Int = 0  // banner的宽度
-     * --------------------------------------------------------------------------------------------------------------
-     */
-    private fun loadBanner(width: Int = 0) {
-        TPBanner(this).also {
-            tpBanner = it
-            it.setAdListener(object : BannerAdListener() {
-                override fun onAdClicked(tpAdInfo: TPAdInfo) {
-                    Toast.makeText(this@MainActivity, "广告被点击了", Toast.LENGTH_SHORT).show()
-                }
+    val timeRun = Runnable {
+        bannerAd?.loadAd(param)
+    }
 
-                override fun onAdImpression(tpAdInfo: TPAdInfo) {
-                    Toast.makeText(this@MainActivity, "广告展示", Toast.LENGTH_SHORT).show()
-                    Log.i(
-                        "TradPlusLog", "width=${width},screenWidth:---${it.measuredWidth}"
-                    )
-                    //这里做放大处理 使广告填充满两边 如果默认的这里不需要处理
-                    if (width > 0 && it.measuredWidth > 0) {
-                        val scale = width / it.measuredWidth.toFloat()
-                        adContainer?.scaleX = scale
-                        adContainer?.scaleY = scale
-                        Log.i("TradPlusLog", "$scale")
-                    }
-                }
+    private fun loadAdBanner() {
 
-                override fun onAdLoaded(tpAdInfo: TPAdInfo) {
-                    Toast.makeText(this@MainActivity, "广告加载完成", Toast.LENGTH_SHORT).show()
+        bannerAd = ZeasnAd(this, adContainer1, AdType.Banner)
 
-                }
+        // 设置监听，⼀定要在请求⼴告之前，否则⼴告请求成功或者失败⽆回调
+        bannerAd?.listener = object : ZeasnOnVodListener {
+            override fun onVideoComplete(zeasnAdInfo: ZeasnAdInfo) {
+                Log.e("onVideoComplete", "onVideoComplete")
+            }
 
-                override fun onAdLoadFailed(error: TPAdError) {
-                    Toast.makeText(this@MainActivity, "广告加载失败", Toast.LENGTH_SHORT).show()
-                }
+            override fun onAdSkip(adInfo: ZeasnAdInfo) {
+                Log.e("onAdSkip", "onAdSkip")
+            }
 
-                override fun onAdClosed(tpAdInfo: TPAdInfo) {
-                    Toast.makeText(
-                        this@MainActivity,
-                        "onAdClosed:${tpAdInfo.adSourceName + "广告关闭"}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+            override fun onAdClick(adInfo: ZeasnAdInfo) {
+                Log.e("onAdClick", "onAdClick")
+            }
+
+            override fun onAdLoaded(adInfo: ZeasnAdInfo, playerControl: PluginPlayerControl) {
+                //PluginPlayerControl ⼴告控制器
+                bannerAdPC = playerControl
+                Log.e("onAdLoaded", "onAdLoaded")
+                if (bannerAdPC != null) {
+                    bannerAdPC?.start()
                 }
-            })
-            adContainer?.addView(tpBanner)
-            it.loadAd(BuildConfig.bannerId);
+            }
+
+            override fun onAdFailed(zeasnError: ZeasnError) {
+                mHandle.postDelayed(timeRun, 10000)
+            }
+
+            override fun onAdClose(adInfo: ZeasnAdInfo) {
+                mHandle.postDelayed(timeRun, 10000)
+            }
         }
+        bannerAd?.loadAd(param)
     }
 
     // 消亡banner广告，
     private fun destroyTpBanner() {
-        tpBanner?.also { adContainer?.removeView(it) }
-        tpBanner?.onDestroy()
-        tpBanner = null
+        bannerAd?.release()
     }
 
     override fun onDestroy() {

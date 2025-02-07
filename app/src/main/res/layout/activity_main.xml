@@ -1,69 +1,124 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/cp_rl_root"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:fillViewport="true">
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:background="#ffffff"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="10dp"
+        android:paddingTop="20dp"
+        android:paddingEnd="10dp">
 
-    <androidx.appcompat.widget.Toolbar
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            app:title="Life"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
 
-    <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:fillViewport="true">
-
-        <LinearLayout
+            <androidx.constraintlayout.helper.widget.Flow
+                android:id="@+id/flow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                app:constraint_referenced_ids="adContainer,adContainer1,adContainer2"
+                app:flow_horizontalStyle="spread_inside"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <FrameLayout
-                    android:id="@+id/adContainer"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp" />
+                android:id="@+id/adContainer"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="#ff3148"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="16:9"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.3" />
 
-            <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@android:color/background_dark" />
+            <FrameLayout
+                android:id="@+id/adContainer1"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="#ff3148"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="16:9"
+                app:layout_constraintStart_toEndOf="@+id/adContainer"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.3" />
 
-            <LinearLayout
+            <FrameLayout
+                android:id="@+id/adContainer2"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="#ff3148"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="16:9"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.3" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/label1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="Popular Videos"
+            tools:ignore="HardcodedText" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:contentDescription="dd"
+            android:paddingTop="15dp"
+            tools:ignore="HardcodedText">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <androidx.constraintlayout.helper.widget.Flow
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    app:constraint_referenced_ids="bt_view0,bt_view1,bt_view2"
+                    app:flow_horizontalGap="10dp"
+                    app:flow_horizontalStyle="spread"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                        android:id="@+id/interstitial_ad"
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:scaleType="fitXY"
-                        android:src="@mipmap/short_drama" />
-            </LinearLayout>
+                <FrameLayout
+                    android:id="@+id/bt_view0"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:background="#ff3148"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="2"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <!--            <LinearLayout-->
-            <!--                    android:layout_width="match_parent"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:gravity="center"-->
-            <!--                    android:orientation="horizontal">-->
+                <FrameLayout
+                    android:id="@+id/bt_view1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:background="#ff3148"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="2"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <!--                <Button-->
-            <!--                        android:id="@+id/test_tools"-->
-            <!--                        android:layout_width="200.0dip"-->
-            <!--                        android:layout_height="50.0dip"-->
-            <!--                        android:gravity="center"-->
-            <!--                        android:text="重新请求"-->
-            <!--                        android:textAllCaps="false"-->
-            <!--                        android:textSize="16sp" />-->
-            <!--            </LinearLayout>-->
+                <FrameLayout
+                    android:id="@+id/bt_view2"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:background="#ff3148"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="2"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </HorizontalScrollView>
+    </LinearLayout>
+</ScrollView>
