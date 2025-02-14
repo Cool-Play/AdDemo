@@ -33,6 +33,8 @@
                 android:id="@+id/adContainer"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:background="#ff3148"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="16:9"
@@ -46,6 +48,8 @@
                 android:background="#ff3148"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="16:9"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 app:layout_constraintStart_toEndOf="@+id/adContainer"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintWidth_percent="0.3" />
@@ -55,6 +59,8 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:background="#ff3148"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="16:9"
                 app:layout_constraintTop_toTopOf="parent"
@@ -96,6 +102,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:background="#ff3148"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintDimensionRatio="2"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -105,6 +113,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:background="#ff3148"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintDimensionRatio="2"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -114,6 +124,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:background="#ff3148"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintDimensionRatio="2"
                     app:layout_constraintTop_toTopOf="parent" />

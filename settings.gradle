@@ -13,6 +13,9 @@ dependencyResolutionManagement {
         maven { url "https://nexus-neolink.zeasn.com/repository/android_plantform/" }
         maven { url 'https://jitpack.io' }
         maven { url "https://maven.aliyun.com/repository/public" }
+        maven {
+            url = uri("../AdSdk/seattleTvSdkInternal/localdebug/seattleTvSdk")
+        }
     }
 }
 
