@@ -33,9 +33,9 @@
                 android:id="@+id/adContainer"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:background="#ff3148"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:background="#ff3148"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="16:9"
                 app:layout_constraintTop_toTopOf="parent"
@@ -46,10 +46,10 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:background="#ff3148"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintDimensionRatio="16:9"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="16:9"
                 app:layout_constraintStart_toEndOf="@+id/adContainer"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintWidth_percent="0.3" />
@@ -78,7 +78,7 @@
 
         <HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="300dp"
             android:contentDescription="dd"
             android:paddingTop="15dp"
             tools:ignore="HardcodedText">
@@ -106,7 +106,8 @@
                     android:focusableInTouchMode="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintDimensionRatio="2"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent">
+                </FrameLayout>
 
                 <FrameLayout
                     android:id="@+id/bt_view1"
