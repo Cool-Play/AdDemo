@@ -19,10 +19,11 @@ class MainActivity : AppCompatActivity() {
     var bannerAdPC: PluginPlayerControl? = null
     private var adContainer1: FrameLayout? = null
     val mHandle = Handler(Looper.getMainLooper())
+
     private var bannerAd: ZeasnAd? = null
     private val param by lazy {
         val param: MutableMap<String, Any> = HashMap()
-        param[ZeasnAdKey.unitViewId] = "unitViewId"
+        param[ZeasnAdKey.unitViewId] = "stb_banner_view"
         param
     }
 
@@ -45,32 +46,32 @@ class MainActivity : AppCompatActivity() {
 
         // 设置监听，⼀定要在请求⼴告之前，否则⼴告请求成功或者失败⽆回调
         bannerAd?.listener = object : ZeasnOnVodListener {
-            override fun onVideoComplete(zeasnAdInfo: ZeasnAdInfo) {
-                Log.e("onVideoComplete", "onVideoComplete")
+            override fun onVideoComplete(zeasnAdInfo: ZeasnAdInfo?) {
+                Log.e("MainActivity", "onVideoComplete")
             }
 
-            override fun onAdSkip(adInfo: ZeasnAdInfo) {
-                Log.e("onAdSkip", "onAdSkip")
+            override fun onAdSkip(adInfo: ZeasnAdInfo?) {
+                Log.e("MainActivity", "onAdSkip")
             }
 
-            override fun onAdClick(adInfo: ZeasnAdInfo) {
-                Log.e("onAdClick", "onAdClick")
+            override fun onAdClick(adInfo: ZeasnAdInfo?) {
+                Log.e("MainActivity", "onAdClick")
             }
 
-            override fun onAdLoaded(adInfo: ZeasnAdInfo, playerControl: PluginPlayerControl) {
+            override fun onAdLoaded(adInfo: ZeasnAdInfo?, playerControl: PluginPlayerControl) {
                 //PluginPlayerControl ⼴告控制器
                 bannerAdPC = playerControl
-                Log.e("onAdLoaded", "onAdLoaded")
+                Log.e("MainActivity", "onAdLoaded")
                 if (bannerAdPC != null) {
                     bannerAdPC?.start()
                 }
             }
 
-            override fun onAdFailed(zeasnError: ZeasnError) {
+            override fun onAdFailed(zeasnError: ZeasnError?) {
                 mHandle.postDelayed(timeRun, 10000)
             }
 
-            override fun onAdClose(adInfo: ZeasnAdInfo) {
+            override fun onAdClose(adInfo: ZeasnAdInfo?) {
                 mHandle.postDelayed(timeRun, 10000)
             }
         }
@@ -80,6 +81,7 @@ class MainActivity : AppCompatActivity() {
     // 消亡banner广告，
     private fun destroyTpBanner() {
         bannerAd?.release()
+        mHandle.removeCallbacks(timeRun)
     }
 
     override fun onDestroy() {

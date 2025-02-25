@@ -2,6 +2,7 @@ package cn.coolplay.mundonoticias
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.zeasn.ad.connector.ZeasnAd
@@ -29,19 +30,23 @@ class SplashActivity : AppCompatActivity() {
      */
     private fun loadSplashAd() {
         val param: MutableMap<String, Any> = HashMap()
-        param[ZeasnAdKey.unitViewId] = "splashView"
+        param.put(ZeasnAdKey.pkgName, packageName);
+        param.put(ZeasnAdKey.useActivity, true);
+        param.put(ZeasnAdKey.unitViewId, "stb_fullscreen_view");
         val fullscreenAd = ZeasnAd(this, null, AdType.Fullscreen)
         fullscreenAd.listener = object : ZeasnListener {
-            override fun onAdLoaded(adInfo: ZeasnAdInfo, playerControl: PluginPlayerControl) {
+            override fun onAdLoaded(adInfo: ZeasnAdInfo?, playerControl: PluginPlayerControl) {
                 fullscreenAdPC = playerControl
                 playerControl.start()
             }
 
-            override fun onAdFailed(zeasnError: ZeasnError) {
+            override fun onAdFailed(zeasnError: ZeasnError?) {
+                Log.e("ddddd", "onAdFailed: " + zeasnError?.msg)
                 goMain()
             }
 
-            override fun onAdClose(adInfo: ZeasnAdInfo) {
+            override fun onAdClose(adInfo: ZeasnAdInfo?) {
+                Log.e("ddddd", "onAdClose: $adInfo")
                 goMain()
             }
         }
