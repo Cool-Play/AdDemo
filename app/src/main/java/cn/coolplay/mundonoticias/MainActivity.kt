@@ -49,12 +49,12 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         } else {
-            adContainer?.let {
-                adRequestBuilder.start(
-                    it,
-                    contentVideoUrl = "https://storage.googleapis.com/gvabox/media/samples/stock.mp4",
-                )
-            }
+//            adContainer?.let {
+//                adRequestBuilder.start(
+//                    it,
+//                    contentVideoUrl = "https://storage.googleapis.com/gvabox/media/samples/stock.mp4",
+//                )
+//            }
         }
 
     }
