@@ -12,6 +12,7 @@ import com.zeasn.ad.connector.impl.AdType
 import com.zeasn.ad.connector.impl.PluginPlayerControl
 import com.zeasn.ad.connector.impl.ZeasnAdKey
 import com.zeasn.ad.connector.listener.ZeasnListener
+import com.zeasn.ad.connector.listener.ZeasnOnVodListener
 
 
 class SplashActivity : AppCompatActivity() {
@@ -34,19 +35,36 @@ class SplashActivity : AppCompatActivity() {
         param.put(ZeasnAdKey.useActivity, true);
         param.put(ZeasnAdKey.unitViewId, "stb_fullscreen_view");
         val fullscreenAd = ZeasnAd(this, null, AdType.Fullscreen)
-        fullscreenAd.listener = object : ZeasnListener {
+        fullscreenAd.listener = object : ZeasnOnVodListener {
+            override fun onVideoComplete(zeasnAdInfo: ZeasnAdInfo?) {
+                Log.e("SplashActivity", "onVideoComplete")
+            }
+
+            override fun onAdSkip(adInfo: ZeasnAdInfo?) {
+                Log.e("SplashActivity", "onAdSkip")
+            }
+
+            override fun onAdClick(adInfo: ZeasnAdInfo?) {
+                Log.e("SplashActivity", "onAdClick")
+            }
+
             override fun onAdLoaded(adInfo: ZeasnAdInfo?, playerControl: PluginPlayerControl) {
-                fullscreenAdPC = playerControl
-                playerControl.start()
+                Log.e("SplashActivity", "onAdLoaded")
+                //PluginPlayerControl ⼴告控制器
+//                fullscreenAdPC = playerControl
+//                Log.e("SplashActivity", "onAdLoaded== $fullscreenAdPC")
+//                if (fullscreenAdPC != null) {
+//                    fullscreenAdPC?.start()
+//                }
             }
 
             override fun onAdFailed(zeasnError: ZeasnError?) {
-                Log.e("ddddd", "onAdFailed: " + zeasnError?.msg)
+                Log.e("SplashActivity", "onAdFailed")
                 goMain()
             }
 
             override fun onAdClose(adInfo: ZeasnAdInfo?) {
-                Log.e("ddddd", "onAdClose: $adInfo")
+                Log.e("SplashActivity", "onAdLoaded")
                 goMain()
             }
         }
@@ -59,6 +77,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun goMain() {
+        Log.e("SplashActivity", "goMain")
         destroySplash()
         startActivity(Intent(this, MainActivity::class.java))
         finish()
